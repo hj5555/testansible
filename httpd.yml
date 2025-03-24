@@ -1,20 +1,21 @@
-- name: httpd 포트 변경
+- name: change web server port and restart httpd
   hosts: all
-  gather_facts: true
   become: true
   vars_files:
-    vars.yml
+    - vars.yml
+
   tasks:
-    - name: httpd 포트 변경
+    - name: change Listen port for httpd setting
       lineinfile:
-        dest: /etc/httpd/conf/httpd.conf
-        regexp: '^Listen\s'
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^Listen'
         line: "Listen {{ webport }}"
       notify:
-        - httpd_restart
+        - Restart httpd
 
   handlers:
-    - name: httpd_restart
-      service:
+    - name: Restart httpd
+      systemd:
         name: httpd
         state: restarted
+        enabled: yes
