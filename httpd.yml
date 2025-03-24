@@ -13,7 +13,6 @@
       notify:
         - httpd_restart
 
-
   handlers:
     - name: httpd_restart
       service:
