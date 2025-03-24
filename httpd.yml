@@ -1,11 +1,15 @@
-- name: change web server port and restart httpd
+- name: Change web server port and restart httpd
   hosts: all
   become: true
   vars_files:
-    - vars.yml
+    - vars.yml  # webport 변수를 여기서 불러옴
 
   tasks:
-    - name: change Listen port for httpd setting
+    - name: Allow SELinux for custom http port
+      command: semanage port -a -t http_port_t -p tcp {{ webport }}
+      ignore_errors: true  # 이미 등록되어 있을 수 있으므로 무시
+
+    - name: Change Listen port in httpd.conf
       lineinfile:
         path: /etc/httpd/conf/httpd.conf
         regexp: '^Listen'
