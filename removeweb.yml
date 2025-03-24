@@ -1,0 +1,21 @@
+  1 - name: stop,remove web
+  2   hosts: all
+  3   become: true
+  4   gather_facts: true
+  5
+  6   tasks:
+  7     - name: Rocky > stop httpd
+  8       service: name=httpd state=stopped
+  9       when: ansible_distribution == 'Rocky'
+ 10
+ 11     - name: Rocky > remove httpd
+ 12       action: "{{ ansible_pkg_mgr }} name=httpd state=absent"
+ 13       when: ansible_distribution == 'Rocky'
+ 14
+ 15     - name: ubuntu > stop nginx
+ 16       service: name=nginx state=stopped
+ 17       when: ansible_distribution == 'Ubuntu'
+ 18
+ 19     - name: Ubuntu > remove nginx
+ 20       action: "{{ ansible_pkg_mgr }} name=nginx state=absent autoremove=yes     purge=yes"
+ 21       when: ansible_distribution == 'Ubuntu'
