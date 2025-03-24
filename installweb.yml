@@ -1,0 +1,28 @@
+  1 - name: web server installation
+  2   hosts: all
+  3   become: true
+  4   gather_facts: true    # default
+  5   tasks:
+  6     - name: Rocky > httpd
+  7       action: "{{ ansible_pkg_mgr }} name=httpd state=present"
+  8       when: ansible_distribution == 'Rocky'
+  9
+ 10     - name: Rocky > index.html
+ 11       get_url: url=https://www.daum.net dest=/var/www/html/index.html
+ 12       when: ansible_distribution == 'Rocky'
+ 13
+ 14     - name: Rocky > start httpd
+ 15       service: name=httpd state=started
+ 16       when: ansible_distribution == 'Rocky'
+ 17
+ 18     - name: Ubuntu > nginx
+ 19       action: "{{ ansible_pkg_mgr }} name=nginx state=present"
+ 20       when: ansible_distribution == 'Ubuntu'
+ 21
+ 22     - name: Ubuntu > index.html
+ 23       get_url: url=https://www.daum.net dest=/var/www/html/index.html
+ 24       when: ansible_distribution == 'Ubuntu'
+ 25
+ 26     - name: Ubuntu > start nginx
+ 27       service: name=nginx state=started
+ 28       when: ansible_distribution == 'Ubuntu'
